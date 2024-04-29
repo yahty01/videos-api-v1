@@ -1,10 +1,8 @@
 import express, {Request, Response} from 'express'
-import bodyParser from "body-parser";
-import {videosLocalRepository} from "./db/db";
+import {videos} from "./db/db";
 import {videosRouter} from "./routes/videosRouter";
 export const app = express()
-
-app.use(bodyParser({}))
+app.use(express.json()); // Middleware для разбора JSON
 
 const CodeResponsesEnum = {
     Ok_200: 200,
@@ -22,6 +20,6 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Hello back-end !!!')
 })
 app.delete('/testing/all-data',(req: Request, res: Response) => {
-    videosLocalRepository.length = 0
+    videos.length = 0
     res.sendStatus(CodeResponsesEnum.NoContent_204)
 })

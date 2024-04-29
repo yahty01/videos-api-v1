@@ -1,103 +1,57 @@
-export const videosLocalRepository = [
-    {
-        id: 0,
-        title: "Discovering Space",
-        author: "John Doe",
-        canBeDownloaded: false,
-        minAgeRestriction: null,
-        createdAt: "2024-04-28T10:54:23.450Z",
-        publicationDate: "2024-04-29T10:54:23.450Z",
-        availableResolutions: ["P144", "P720"]
-    },
+// Определение перечисления для доступных разрешений видео
+export enum Resolutions {
+    P144 = "P144",
+    P240 = "P240",
+    P360 = "P360",
+    P480 = "P480",
+    P720 = "P720",
+    P1080 = "P1080",
+    P1440 = "P1440",
+    P2160 = "P2160"
+}
+
+// Определение интерфейса для видео
+export interface Video {
+    id: number; // ID видео, integer тип
+    title: string; // Название видео, обязательный параметр
+    author: string; // Автор видео, обязательный параметр
+    canBeDownloaded: boolean; // Возможность скачивания, по умолчанию false
+    minAgeRestriction: number | null; // Ограничение по возрасту, может быть null
+    createdAt: string; // Дата создания, строка в формате даты и времени
+    publicationDate: string; // Дата публикации, строка в формате даты и времени
+    availableResolutions: Resolutions[] | null; // Доступные разрешения, могут быть nullable
+}
+
+// Создание массива объектов Video
+export const videos: Video[] = [
     {
         id: 1,
-        title: "Ocean Depths",
-        author: "Jane Roe",
+        title: "Exploring TypeScript",
+        author: "Jane Doe",
         canBeDownloaded: false,
         minAgeRestriction: null,
-        createdAt: "2024-04-28T11:00:00.000Z",
-        publicationDate: "2024-04-29T11:00:00.000Z",
-        availableResolutions: ["P240", "P1080"]
+        createdAt: new Date().toISOString(),
+        publicationDate: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
+        availableResolutions: [Resolutions.P144, Resolutions.P720]
     },
     {
         id: 2,
-        title: "Mountain Adventure",
-        author: "Alice Smith",
+        title: "Advanced JavaScript",
+        author: "John Smith",
         canBeDownloaded: false,
-        minAgeRestriction: null,
-        createdAt: "2024-04-28T11:05:00.000Z",
-        publicationDate: "2024-04-29T11:05:00.000Z",
-        availableResolutions: ["P360", "P1440"]
+        minAgeRestriction: 16,
+        createdAt: new Date().toISOString(),
+        publicationDate: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
+        availableResolutions: [Resolutions.P360, Resolutions.P1080]
     },
     {
         id: 3,
-        title: "Jungle Safari",
-        author: "Bob Johnson",
+        title: "Understanding Enums",
+        author: "Alice Johnson",
         canBeDownloaded: false,
-        minAgeRestriction: null,
-        createdAt: "2024-04-28T11:10:00.000Z",
-        publicationDate: "2024-04-29T11:10:00.000Z",
-        availableResolutions: ["P480", "P2160"]
-    },
-    {
-        id: 4,
-        title: "Historic Cities",
-        author: "Clara Belle",
-        canBeDownloaded: false,
-        minAgeRestriction: null,
-        createdAt: "2024-04-28T11:15:00.000Z",
-        publicationDate: "2024-04-29T11:15:00.000Z",
-        availableResolutions: ["P720"]
-    },
-    {
-        id: 5,
-        title: "Arctic Expeditions",
-        author: "Danny Wells",
-        canBeDownloaded: false,
-        minAgeRestriction: null,
-        createdAt: "2024-04-28T11:20:00.000Z",
-        publicationDate: "2024-04-29T11:20:00.000Z",
-        availableResolutions: ["P144", "P360", "P1080"]
-    },
-    {
-        id: 6,
-        title: "Desert Mysteries",
-        author: "Eva Green",
-        canBeDownloaded: false,
-        minAgeRestriction: null,
-        createdAt: "2024-04-28T11:25:00.000Z",
-        publicationDate: "2024-04-29T11:25:00.000Z",
-        availableResolutions: ["P240", "P480", "P720"]
-    },
-    {
-        id: 7,
-        title: "Life in Metropolis",
-        author: "Frank Poe",
-        canBeDownloaded: false,
-        minAgeRestriction: null,
-        createdAt: "2024-04-28T11:30:00.000Z",
-        publicationDate: "2024-04-29T11:30:00.000Z",
-        availableResolutions: ["P360", "P2160"]
-    },
-    {
-        id: 8,
-        title: "The World of Insects",
-        author: "Gina Hawk",
-        canBeDownloaded: false,
-        minAgeRestriction: null,
-        createdAt: "2024-04-28T11:35:00.000Z",
-        publicationDate: "2024-04-29T11:35:00.000Z",
-        availableResolutions: ["P144", "P720", "P1440"]
-    },
-    {
-        id: 9,
-        title: "Underwater Cities",
-        author: "Harry Kite",
-        canBeDownloaded: false,
-        minAgeRestriction: null,
-        createdAt: "2024-04-28T11:40:00.000Z",
-        publicationDate: "2024-04-29T11:40:00.000Z",
-        availableResolutions: ["P1080", "P2160"]
-    },
+        minAgeRestriction: 12,
+        createdAt: new Date().toISOString(),
+        publicationDate: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
+        availableResolutions: [Resolutions.P240, Resolutions.P1440, Resolutions.P2160]
+    }
 ];
-

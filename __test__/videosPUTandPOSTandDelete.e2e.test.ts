@@ -40,14 +40,14 @@ describe('Videos', () => {
             .expect(201)
         videoOne = createResponse.body
 
-    // Проверка, что videoOne соответствует ожидаемым требованиям
+        // Проверка, что videoOne соответствует ожидаемым требованиям
         expect(videoOne.id).toEqual(expect.any(Number));
         expect(videoOne.title).toEqual(expect.any(String));
         expect(videoOne.author).toEqual(expect.any(String));
         expect(videoOne.canBeDownloaded).toEqual(expect.any(Boolean));
         expect(videoOne.createdAt).toEqual(expect.any(String));
         expect(videoOne.publicationDate).toEqual(expect.any(String));
-    // Дополнительно проверяем, что minAgeRestriction либо число, либо null
+        // Дополнительно проверяем, что minAgeRestriction либо число, либо null
         expect([null, expect.any(Number)]).toContain(videoOne.minAgeRestriction);
         expect([null, expect.any(String)]).toContain(videoOne.availableResolutions);
 
@@ -55,14 +55,12 @@ describe('Videos', () => {
             .get('/videos/' + videoOne.id)
             .expect(200);
         expect(fetchVideo.body).toMatchObject(videoOne);
-    })
 
-    it ('- POST create one more video with correct data', async function () {
-        const createResponse = await request(app)
+        const createResponse2 = await request(app)
             .post('/videos')
             .send({title: 'it-video2', author: 'egor2'})
             .expect(201)
-        videoTwo = createResponse.body
+        videoTwo = createResponse2.body
 
         // Проверка, что videoOne соответствует ожидаемым требованиям
         expect(videoTwo.id).toEqual(expect.any(Number));
@@ -75,9 +73,54 @@ describe('Videos', () => {
         expect([null, expect.any(Number)]).toContain(videoTwo.minAgeRestriction);
         expect([null, expect.any(String)]).toContain(videoTwo.availableResolutions);
 
-        const fetchVideo = await request(app)
+        const fetchVideo2 = await request(app)
             .get('/videos/' +videoTwo.id)
             .expect(200);
-        expect(fetchVideo.body).toMatchObject(videoTwo);
+        expect(fetchVideo2.body).toMatchObject(videoTwo);
+
+       await request(app)
+            .get('/videos')
+            .expect(200, [videoOne, videoTwo]);
+
+       await request(app)
+           .put('/videos/' + videoTwo.id)
+           .send({title: '', author: 'egor2'})
+           .expect(400)
+        await request(app)
+            .put('/videos/' + videoTwo.id)
+            .send({title: 'dwdw', author: ''})
+            .expect(400)
+        await request(app)
+            .put('/videos/' + videoTwo.id)
+            .send({title: '', author: ''})
+            .expect(400)
+        await request(app)
+            .put('/videos/' + videoTwo.id)
+            .send({title: 'wdwdwd', author: 'egor2'})
+            .expect(204)
+        await request(app)
+            .put('/videos/' + videoTwo.id)
+            .send({title: 'wdwdwdwawdawdawdawdawdawdawdawdawdawdawdawdawdawdawdawdawdwadwadwd', author: 'egor2'})
+            .expect(400)
+        await request(app)
+            .put('/videos/' + videoTwo.id)
+            .send({title: 'awdwd', author: 'wdwdwdwawdawdawdawdawdawdawdawdawdawdawdawdawdawdawdawdawdwadwadwd'})
+            .expect(400)
+        await request(app)
+            .put('/videos/' + videoTwo.id)
+            .send({canBeDownloaded: true})
+            .expect(204)
+        await request(app)
+            .put('/videos/' + videoTwo.id)
+            .send({minAgeRestriction: 18})
+            .expect(204)
+        await request(app)
+            .put('/videos/' + videoTwo.id)
+            .send({availableResolutions: "P720"})
+            .expect(204)
+        await request(app)
+            .put('/videos/' + videoTwo.id)
+            .send({availableResolutions: "P720"})
+            .expect(204)
     })
 })
