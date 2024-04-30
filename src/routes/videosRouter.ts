@@ -32,7 +32,12 @@ videosRouter.post('/', (req: Request, res: Response) => {
     const { title, author, canBeDownloaded = false, minAgeRestriction = null, availableResolutions = null } = req.body;
     const errorsMessages = [];
     if (availableResolutions && !isValidResolution(availableResolutions)) {
-        res.status(400).json({ message: "Invalid resolution in availableResolutions" });
+        res.status(400).json({
+            errorsMessage: [{
+                message: "availableResolutions is required",
+                field: 'availableResolutions',
+            }]
+        });
         return;
     }
     // Проверка обязательных полей и добавление сообщений об ошибках в массив.
@@ -73,7 +78,12 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
         minAgeRestriction = currentMinAgeRestriction, availableResolutions = currentAvailableResolutions } = req.body;
 
     if (availableResolutions && !isValidResolution(availableResolutions)) {
-        res.status(400).json({ message: "Invalid resolution in availableResolutions" });
+        res.status(400).json({
+            errorsMessage: [{
+                message: "availableResolutions is required",
+                field: 'availableResolutions',
+            }]
+        });
         return;
     }
 
