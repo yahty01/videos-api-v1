@@ -40,14 +40,18 @@ videosRouter.post('/', (req: Request, res: Response) => {
         res.status(400).json({ errorsMessages });
         return;
     }
+    const createdAt = new Date();
+    const publicationDate = new Date();
+    publicationDate.setDate(createdAt.getDate() + 1);
+
     const newVideo: Video = {
         id: videos.length + 3 + new Date().getTime(),
         title,
         author,
         canBeDownloaded,
         minAgeRestriction,
-        createdAt: new Date().toISOString(),
-        publicationDate: new Date(new Date().setDate(new Date().getDate()) + 1).toISOString(),
+        createdAt: createdAt.toISOString(),
+        publicationDate: publicationDate.toISOString(),
         availableResolutions: availableResolutions
     };
     videos.push(newVideo)
@@ -79,14 +83,14 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
         res.status(400).json({ errorsMessages });
         return;
     }
-
+    const publicationDate = new Date();
+    publicationDate.setDate(new Date().getDate() + 1);
     video.title = title;
     video.author = author;
     video.canBeDownloaded = canBeDownloaded;
     video.minAgeRestriction = minAgeRestriction;
     video.availableResolutions = availableResolutions;
-    video.publicationDate = new Date(new Date().setDate(new Date().getDate()) + 1).toISOString()
-
+    video.publicationDate = publicationDate.toISOString();
     res.status(204).json(video);
 
 })
