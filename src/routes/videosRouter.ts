@@ -32,7 +32,7 @@ videosRouter.post('/', (req: Request, res: Response) => {
     const { title, author, canBeDownloaded = false, minAgeRestriction = null, availableResolutions = null } = req.body;
     const errorsMessages = [];
     if (availableResolutions && !isValidResolution(availableResolutions)) {
-        res.status(400).json({
+        res.status(400).send({
             errorsMessage: [{
                 message: "availableResolutions is required",
                 field: 'availableResolutions',
@@ -55,7 +55,7 @@ videosRouter.post('/', (req: Request, res: Response) => {
         canBeDownloaded,
         minAgeRestriction,
         createdAt: new Date().toISOString(),
-        publicationDate: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
+        publicationDate: new Date(new Date().setDate(new Date().getDate())).toISOString(),
         availableResolutions: availableResolutions
     };
     videos.push(newVideo)
@@ -78,7 +78,7 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
         minAgeRestriction = currentMinAgeRestriction, availableResolutions = currentAvailableResolutions } = req.body;
 
     if (availableResolutions && !isValidResolution(availableResolutions)) {
-        res.status(400).json({
+        res.status(400).send({
             errorsMessage: [{
                 message: "availableResolutions is required",
                 field: 'availableResolutions',
@@ -112,7 +112,7 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
     video.canBeDownloaded = canBeDownloaded;
     video.minAgeRestriction = minAgeRestriction;
     video.availableResolutions = availableResolutions;
-    video.publicationDate = new Date(new Date().setDate(new Date().getDate() + 1)).toISOString()
+    video.publicationDate = new Date(new Date().setDate(new Date().getDate())).toISOString()
 
     res.status(204).json(video);
 
