@@ -47,7 +47,7 @@ videosRouter.post('/', (req: Request, res: Response) => {
         canBeDownloaded,
         minAgeRestriction,
         createdAt: new Date().toISOString(),
-        publicationDate: new Date(new Date().setDate(new Date().getDate())).toISOString(),
+        publicationDate: new Date(new Date().setDate(new Date().getDate()) + 1).toISOString(),
         availableResolutions: availableResolutions
     };
     videos.push(newVideo)
@@ -85,7 +85,7 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
     video.canBeDownloaded = canBeDownloaded;
     video.minAgeRestriction = minAgeRestriction;
     video.availableResolutions = availableResolutions;
-    video.publicationDate = new Date(new Date().setDate(new Date().getDate())).toISOString()
+    video.publicationDate = new Date(new Date().setDate(new Date().getDate()) + 1).toISOString()
 
     res.status(204).json(video);
 
