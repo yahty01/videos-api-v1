@@ -67,36 +67,43 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
         return;
     }
 
-    const { title: currentTitle, author: currentAuthor, canBeDownloaded: currentCanBeDownloaded,
-        minAgeRestriction: currentMinAgeRestriction, availableResolutions: currentAvailableResolutions } = video;
-
-    const { title = currentTitle, author = currentAuthor, canBeDownloaded = currentCanBeDownloaded,
-        minAgeRestriction = currentMinAgeRestriction, availableResolutions = currentAvailableResolutions } = req.body;
+    const { title, author, canBeDownloaded, minAgeRestriction, availableResolutions } = req.body;
 
     const errorsMessages = [];
 
-    if (availableResolutions && !isValidResolution(availableResolutions)) { errorsMessages.push({ message: "availableResolutions is required", field: "availableResolutions"})}
-    if (!title || !title.trim() || title.length > 40) { errorsMessages.push({ message: "title is required", field: "title" });}
-    if (!author || !author.trim() || author.length > 20) { errorsMessages.push({ message: "author is required", field: "author" });}
-    if (typeof canBeDownloaded !== "boolean") {
-        errorsMessages.push({ message: "canBeDownloaded must be a boolean", field: "canBeDownloaded" });
+    // Check if title is present and valid
+    if (title === null || title === undefined || !title.trim() || title.length > 40) {
+        errorsMessages.push({ message: "title is required or too long", field: "title" });
     }
-    // Если в массиве есть ошибки, отправить их и прервать выполнение функции.
+
+    // Check if author is present and valid
+    if (!author || !author.trim() || author.length > 20) {
+        errorsMessages.push({ message: "author is required or too long", field: "author" });
+    }
+
+    // Validate canBeDownloaded to be a boolean
+    if (canBeDownloaded !== undefined && typeof canBeDownloaded !== 'boolean') {
+        errorsMessages.push({ message: "canBeDownloaded must be boolean", field: "canBeDownloaded" });
+    }
+
+    // Additional checks (e.g., availableResolutions) can be added similarly
+
     if (errorsMessages.length > 0) {
         res.status(400).json({ errorsMessages });
         return;
     }
-    const publicationDate = new Date();
-    publicationDate.setDate(new Date().getDate() + 1);
+
+    // Update video properties if no errors
     video.title = title;
     video.author = author;
-    video.canBeDownloaded = canBeDownloaded;
+    video.canBeDownloaded = typeof canBeDownloaded === 'boolean' ? canBeDownloaded : video.canBeDownloaded;
     video.minAgeRestriction = minAgeRestriction;
     video.availableResolutions = availableResolutions;
-    video.publicationDate = publicationDate.toISOString();
-    res.status(204).json(video);
+    video.publicationDate = new Date().toISOString();
 
-})
+    res.status(204).send(video);
+});
+
 
 videosRouter.delete('/:id', (req: Request, res: Response) => {
     const iD = +req.params.id;
