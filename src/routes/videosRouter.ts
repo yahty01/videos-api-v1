@@ -31,15 +31,7 @@ videosRouter.get('/:id', (req: Request, res: Response) => {
 videosRouter.post('/', (req: Request, res: Response) => {
     const { title, author, canBeDownloaded = false, minAgeRestriction = null, availableResolutions = null } = req.body;
     const errorsMessages = [];
-    if (availableResolutions && !isValidResolution(availableResolutions)) {
-        res.status(400).send({
-            errorsMessage: [{
-                message: "availableResolutions is required",
-                field: 'availableResolutions',
-            }]
-        });
-        return;
-    }
+    if (availableResolutions && !isValidResolution(availableResolutions)) { errorsMessages.push({ message: "availableResolutions is required", field: "availableResolutions"})}
     // Проверка обязательных полей и добавление сообщений об ошибках в массив.
     if (!title || typeof title !== "string" || !title.trim() || title.length > 40) { errorsMessages.push({ message: "title is required", field: "title" });}
     if (!author || typeof author !== "string" || !author.trim() || author.length > 20) { errorsMessages.push({ message: "author is required", field: "author" });}
@@ -77,33 +69,14 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
     const { title = currentTitle, author = currentAuthor, canBeDownloaded = currentCanBeDownloaded,
         minAgeRestriction = currentMinAgeRestriction, availableResolutions = currentAvailableResolutions } = req.body;
 
-    if (availableResolutions && !isValidResolution(availableResolutions)) {
-        res.status(400).send({
-            errorsMessage: [{
-                message: "availableResolutions is required",
-                field: 'availableResolutions',
-            }]
-        });
-        return;
-    }
+    const errorsMessages = [];
 
-    if (!title || !title.trim() || title.length > 40) {
-        res.status(400).send({
-            errorsMessage: [{
-                message: "title is required",
-                field: 'title',
-            }]
-        })
-        return
-    }
-
-    if (!author || !author.trim() || author.length > 20) {
-        res.status(400).send({
-            errorsMessage: [{
-                message: "author is required",
-                field: 'author',
-            }]
-        })
+    if (availableResolutions && !isValidResolution(availableResolutions)) { errorsMessages.push({ message: "availableResolutions is required", field: "availableResolutions"})}
+    if (!title || !title.trim() || title.length > 40) { errorsMessages.push({ message: "title is required", field: "title" });}
+    if (!author || !author.trim() || author.length > 20) { errorsMessages.push({ message: "author is required", field: "author" });}
+    // Если в массиве есть ошибки, отправить их и прервать выполнение функции.
+    if (errorsMessages.length > 0) {
+        res.status(400).json({ errorsMessages });
         return;
     }
 
