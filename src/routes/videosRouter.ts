@@ -82,6 +82,7 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
     video.canBeDownloaded = canBeDownloaded;
     video.minAgeRestriction = minAgeRestriction;
     video.availableResolutions = availableResolutions;
+    video.publicationDate = new Date(new Date().setDate(new Date().getDate() + 1)).toISOString()
 
     res.status(204).json(video);
 
