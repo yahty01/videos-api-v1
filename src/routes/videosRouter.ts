@@ -78,6 +78,9 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
     if (availableResolutions && !isValidResolution(availableResolutions)) { errorsMessages.push({ message: "availableResolutions is required", field: "availableResolutions"})}
     if (!title || !title.trim() || title.length > 40) { errorsMessages.push({ message: "title is required", field: "title" });}
     if (!author || !author.trim() || author.length > 20) { errorsMessages.push({ message: "author is required", field: "author" });}
+    if (typeof canBeDownloaded !== "boolean") {
+        errorsMessages.push({ message: "canBeDownloaded must be a boolean", field: "canBeDownloaded" });
+    }
     // Если в массиве есть ошибки, отправить их и прервать выполнение функции.
     if (errorsMessages.length > 0) {
         res.status(400).json({ errorsMessages });
