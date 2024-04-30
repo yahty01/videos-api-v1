@@ -21,8 +21,8 @@ videosRouter.post('/', (req: Request, res: Response) => {
     const { title, author, canBeDownloaded = false, minAgeRestriction = null, availableResolutions = null } = req.body;
     const errorsMessages = [];
     // Проверка обязательных полей и добавление сообщений об ошибках в массив.
-    if (!title) { errorsMessages.push({ message: "title is required", field: "title" });}
-    if (!author) { errorsMessages.push({ message: "author is required", field: "author" });}
+    if (!title || typeof title !== "string" || !title.trim() || title.length > 40) { errorsMessages.push({ message: "title is required", field: "title" });}
+    if (!author || typeof author !== "string" || !author.trim() || author.length > 20) { errorsMessages.push({ message: "author is required", field: "author" });}
     // Если в массиве есть ошибки, отправить их и прервать выполнение функции.
     if (errorsMessages.length > 0) {
         res.status(400).json({ errorsMessages });
@@ -92,14 +92,6 @@ videosRouter.delete('/:id', (req: Request, res: Response) => {
     const videoIndex = videos.findIndex(video => video.id === iD);
     if (videoIndex > -1) {
         videos.splice(videoIndex, 1);
-        res.status(204)
-    } else {res.status(404)}
-    // for ( let i = 0; i < videos.length; i++ ) {
-    //     if (videos[i].id === +req.params.id) {
-    //         videos.splice(i, 1);
-    //         res.status(204);
-    //         return
-    //     }
-    // }
-    // res.status(404)
+        res.sendStatus(204)
+    } else {res.sendStatus(404)}
 })
