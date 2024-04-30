@@ -1,6 +1,17 @@
 import {Request, Response, Router} from "express";
 import {videos, Video, Resolutions} from "../db/db";
 
+function isValidResolution(resolution: any): boolean {
+    const resolutionValues = Object.values(Resolutions);
+    // Если resolution является массивом, проверяем каждый элемент массива
+    if (Array.isArray(resolution)) {
+        return resolution.every(r => resolutionValues.includes(r));
+    }
+    // Иначе проверяем одиночное значение
+    return resolutionValues.includes(resolution);
+}
+
+
 export const videosRouter = Router({})
 
 videosRouter.get('/', (req: Request, res: Response) => {
@@ -20,6 +31,10 @@ videosRouter.get('/:id', (req: Request, res: Response) => {
 videosRouter.post('/', (req: Request, res: Response) => {
     const { title, author, canBeDownloaded = false, minAgeRestriction = null, availableResolutions = null } = req.body;
     const errorsMessages = [];
+    if (availableResolutions && !isValidResolution(availableResolutions)) {
+        res.status(400).json({ message: "Invalid resolution in availableResolutions" });
+        return;
+    }
     // Проверка обязательных полей и добавление сообщений об ошибках в массив.
     if (!title || typeof title !== "string" || !title.trim() || title.length > 40) { errorsMessages.push({ message: "title is required", field: "title" });}
     if (!author || typeof author !== "string" || !author.trim() || author.length > 20) { errorsMessages.push({ message: "author is required", field: "author" });}
@@ -36,7 +51,7 @@ videosRouter.post('/', (req: Request, res: Response) => {
         minAgeRestriction,
         createdAt: new Date().toISOString(),
         publicationDate: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
-        availableResolutions: availableResolutions ? availableResolutions.filter((r: any) => Object.values(Resolutions).includes(r)) : null
+        availableResolutions: availableResolutions
     };
     videos.push(newVideo)
     res.status(201).json(newVideo)
@@ -57,7 +72,12 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
     const { title = currentTitle, author = currentAuthor, canBeDownloaded = currentCanBeDownloaded,
         minAgeRestriction = currentMinAgeRestriction, availableResolutions = currentAvailableResolutions } = req.body;
 
-    if (!title || typeof title !== "string" || !title.trim() || title.length > 40) {
+    if (availableResolutions && !isValidResolution(availableResolutions)) {
+        res.status(400).json({ message: "Invalid resolution in availableResolutions" });
+        return;
+    }
+
+    if (!title || !title.trim() || title.length > 40) {
         res.status(400).send({
             errorsMessage: [{
                 message: "title is required",
@@ -67,7 +87,7 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
         return
     }
 
-    if (!author || typeof author !== "string" || !author.trim() || author.length > 20) {
+    if (!author || !author.trim() || author.length > 20) {
         res.status(400).send({
             errorsMessage: [{
                 message: "author is required",
