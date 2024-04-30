@@ -6,6 +6,7 @@ export const videosRouter = Router({})
 videosRouter.get('/', (req: Request, res: Response) => {
     res.status(200).send(videos);
 })
+
 videosRouter.get('/:id', (req: Request, res: Response) => {
     const id = +req.params.id;
     const video = videos.find(x => x.id === id);
@@ -15,6 +16,7 @@ videosRouter.get('/:id', (req: Request, res: Response) => {
         res.sendStatus(404);
     }
 })
+
 videosRouter.post('/', (req: Request, res: Response) => {
     const { title, author, canBeDownloaded = false, minAgeRestriction = null, availableResolutions = null } = req.body;
     const errorsMessages = [];
@@ -43,13 +45,18 @@ videosRouter.post('/', (req: Request, res: Response) => {
 videosRouter.put('/:id', (req: Request, res: Response) => {
     const id = +req.params.id;
     const video = videos.find(x => x.id === id);
+
     if (!video) {
         res.sendStatus(404);
         return;
     }
+
     const { title: currentTitle, author: currentAuthor, canBeDownloaded: currentCanBeDownloaded,
         minAgeRestriction: currentMinAgeRestriction, availableResolutions: currentAvailableResolutions } = video;
-    const { title = currentTitle, author = currentAuthor, canBeDownloaded = currentCanBeDownloaded, minAgeRestriction = currentMinAgeRestriction, availableResolutions = currentAvailableResolutions } = req.body;
+
+    const { title = currentTitle, author = currentAuthor, canBeDownloaded = currentCanBeDownloaded,
+        minAgeRestriction = currentMinAgeRestriction, availableResolutions = currentAvailableResolutions } = req.body;
+
     if (!title || typeof title !== "string" || !title.trim() || title.length > 40) {
         res.status(400).send({
             errorsMessage: [{
@@ -59,6 +66,7 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
         })
         return
     }
+
     if (!author || typeof author !== "string" || !author.trim() || author.length > 20) {
         res.status(400).send({
             errorsMessage: [{
@@ -77,4 +85,21 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
 
     res.status(204).json(video);
 
+})
+
+videosRouter.delete('/:id', (req: Request, res: Response) => {
+    const iD = +req.params.id;
+    const videoIndex = videos.findIndex(video => video.id === iD);
+    if (videoIndex > -1) {
+        videos.splice(videoIndex, 1);
+        res.status(204)
+    } else {res.status(404)}
+    // for ( let i = 0; i < videos.length; i++ ) {
+    //     if (videos[i].id === +req.params.id) {
+    //         videos.splice(i, 1);
+    //         res.status(204);
+    //         return
+    //     }
+    // }
+    // res.status(404)
 })

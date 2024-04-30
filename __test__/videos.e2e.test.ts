@@ -5,8 +5,7 @@ import {Resolutions, Video, videos} from "../src/db/db";
 
 describe('Videos', () => {
     let videoOne: any = null;
-    let videoTwo: any = null;
-    let db = [];
+    let videoTwo: any = null
 
     beforeEach(async () => {
         await request(app).delete('/testing/all-data').expect(204)
