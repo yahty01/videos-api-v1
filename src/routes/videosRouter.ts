@@ -61,41 +61,43 @@ videosRouter.post('/', (req: Request, res: Response) => {
 videosRouter.put('/:id', (req: Request, res: Response) => {
     const id = +req.params.id;
     const video = videos.find(x => x.id === id);
-
     if (!video) {
         res.sendStatus(404);
         return;
     }
-
-    const { title, author, canBeDownloaded, minAgeRestriction, availableResolutions } = req.body;
+    const {
+        title: title = video.title,
+        author: author = video.author,
+        canBeDownloaded: canBeDownloaded = video.canBeDownloaded,
+        minAgeRestriction: minAgeRestriction = video.minAgeRestriction,
+        availableResolutions: availableResolutions = video.availableResolutions
+    } = req.body;
 
     const errorsMessages = [];
 
-    // Check if title is present and valid
     if (title === null || title === undefined || !title.trim() || title.length > 40) {
         errorsMessages.push({ message: "title is required or too long", field: "title" });
     }
-
-    // Check if author is present and valid
     if (!author || !author.trim() || author.length > 20) {
         errorsMessages.push({ message: "author is required or too long", field: "author" });
     }
-
-    // Validate canBeDownloaded to be a boolean
-    if (canBeDownloaded !== undefined && typeof canBeDownloaded !== 'boolean') {
+    if (typeof canBeDownloaded !== 'boolean') {
         errorsMessages.push({ message: "canBeDownloaded must be boolean", field: "canBeDownloaded" });
     }
-
-    // Additional checks (e.g., availableResolutions) can be added similarly
+    if (availableResolutions && !isValidResolution(availableResolutions)) { errorsMessages.push({ message: "availableResolutions is required", field: "availableResolutions"})}
+    if (typeof minAgeRestriction !== 'number' && minAgeRestriction !== null) {
+        errorsMessages.push({ message: "minAgeRestriction must be a number or null", field: "minAgeRestriction" });
+    }
     if (errorsMessages.length > 0) {
         res.status(400).send({ errorsMessages });
         return;
     }
 
-    // Update video properties if no errors
+
+
     video.title = title;
     video.author = author;
-    video.canBeDownloaded = typeof canBeDownloaded === 'boolean' ? canBeDownloaded : video.canBeDownloaded;
+    video.canBeDownloaded = canBeDownloaded;
     video.minAgeRestriction = minAgeRestriction;
     video.availableResolutions = availableResolutions;
     video.publicationDate = new Date().toISOString();
