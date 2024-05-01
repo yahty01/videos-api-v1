@@ -37,7 +37,7 @@ videosRouter.post('/', (req: Request, res: Response) => {
     if (!author || typeof author !== "string" || !author.trim() || author.length > 20) { errorsMessages.push({ message: "author is required", field: "author" });}
     // Если в массиве есть ошибки, отправить их и прервать выполнение функции.
     if (errorsMessages.length > 0) {
-        res.status(400).json({ errorsMessages });
+        res.status(400).send({ errorsMessages });
         return;
     }
     const createdAt = new Date();
@@ -87,9 +87,8 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
     }
 
     // Additional checks (e.g., availableResolutions) can be added similarly
-
     if (errorsMessages.length > 0) {
-        res.status(400).json({ errorsMessages });
+        res.status(400).send({ errorsMessages });
         return;
     }
 
