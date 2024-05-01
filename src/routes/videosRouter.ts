@@ -75,7 +75,7 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
 
     const errorsMessages = [];
 
-    if (title === null || title === undefined || !title.trim() || title.length > 40) {
+    if (typeof title !== 'string' || !title.trim() || title.length > 40) {
         errorsMessages.push({ message: "title is required or too long", field: "title" });
     }
     if (!author || !author.trim() || author.length > 20) {
@@ -84,7 +84,8 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
     if (typeof canBeDownloaded !== 'boolean') {
         errorsMessages.push({ message: "canBeDownloaded must be boolean", field: "canBeDownloaded" });
     }
-    if (availableResolutions && !isValidResolution(availableResolutions)) { errorsMessages.push({ message: "availableResolutions is required", field: "availableResolutions"})}
+    if (availableResolutions && !isValidResolution(availableResolutions)) {
+        errorsMessages.push({ message: "availableResolutions is required", field: "availableResolutions"})}
     if (typeof minAgeRestriction !== 'number' && minAgeRestriction !== null) {
         errorsMessages.push({ message: "minAgeRestriction must be a number or null", field: "minAgeRestriction" });
     }
