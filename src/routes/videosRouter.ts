@@ -33,18 +33,18 @@ videosRouter.post('/', (req: Request, res: Response) => {
     const errorsMessages = [];
 
     if (typeof title !== 'string' || !title.trim() || title.length > 40) {
-        errorsMessages.push({ message: "title is required or too long", field: "title" });
+        errorsMessages.push({ message: "title is required", field: "title" });
     }
     if (!author || !author.trim() || author.length > 20) {
-        errorsMessages.push({ message: "author is required or too long", field: "author" });
+        errorsMessages.push({ message: "author is required", field: "author" });
     }
     if (typeof canBeDownloaded !== 'boolean') {
         errorsMessages.push({ message: "canBeDownloaded must be boolean", field: "canBeDownloaded" });
     }
     if (availableResolutions && !isValidResolution(availableResolutions)) {
         errorsMessages.push({ message: "availableResolutions is required", field: "availableResolutions"})}
-    if (typeof minAgeRestriction !== 'number' && minAgeRestriction !== null) {
-        errorsMessages.push({ message: "minAgeRestriction must be a number or null", field: "minAgeRestriction" });
+    if (!(minAgeRestriction === null || (typeof minAgeRestriction === 'number' && minAgeRestriction <= 18))) {
+        errorsMessages.push({ message: "minAgeRestriction must be a number <= 18 or null", field: "minAgeRestriction" });
     }
     if (errorsMessages.length > 0) {
         res.status(400).send({ errorsMessages });
@@ -87,18 +87,18 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
     const errorsMessages = [];
 
     if (typeof title !== 'string' || !title.trim() || title.length > 40) {
-        errorsMessages.push({ message: "title is required or too long", field: "title" });
+        errorsMessages.push({ message: "title is required", field: "title" });
     }
     if (!author || !author.trim() || author.length > 20) {
-        errorsMessages.push({ message: "author is required or too long", field: "author" });
+        errorsMessages.push({ message: "author is required", field: "author" });
     }
     if (typeof canBeDownloaded !== 'boolean') {
         errorsMessages.push({ message: "canBeDownloaded must be boolean", field: "canBeDownloaded" });
     }
     if (availableResolutions && !isValidResolution(availableResolutions)) {
         errorsMessages.push({ message: "availableResolutions is required", field: "availableResolutions"})}
-    if (typeof minAgeRestriction !== 'number' && minAgeRestriction !== null) {
-        errorsMessages.push({ message: "minAgeRestriction must be a number or null", field: "minAgeRestriction" });
+    if (!(minAgeRestriction === null || (typeof minAgeRestriction === 'number' && minAgeRestriction <= 18))) {
+        errorsMessages.push({ message: "minAgeRestriction must be a number <= 18 or null", field: "minAgeRestriction" });
     }
     if (errorsMessages.length > 0) {
         res.status(400).send({ errorsMessages });
