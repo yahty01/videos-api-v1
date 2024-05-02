@@ -133,6 +133,6 @@ describe('Videos', () => {
         await request(app)
             .put('/videos/' + videoTwo.id)
             .send({ author: 'sswswws', availableResolutions: "P7q20", canBeDownloaded: 'false', title: 12,})
-            .expect(400)
+            .expect(400, [])
     })
 })
