@@ -81,7 +81,8 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
         author: author = video.author,
         canBeDownloaded: canBeDownloaded = video.canBeDownloaded,
         minAgeRestriction: minAgeRestriction = video.minAgeRestriction,
-        availableResolutions: availableResolutions = video.availableResolutions
+        availableResolutions: availableResolutions = video.availableResolutions,
+        publicationDate: publicationDate = video.publicationDate
     } = req.body;
 
     const errorsMessages = [];
@@ -100,6 +101,9 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
     if (!(minAgeRestriction === null || (typeof minAgeRestriction === 'number' && minAgeRestriction <= 18))) {
         errorsMessages.push({ message: "minAgeRestriction must be a number <= 18 or null", field: "minAgeRestriction" });
     }
+    if (typeof publicationDate !== 'string') {
+        errorsMessages.push({ message: "publicationDate is required", field: "publicationDate" });
+    }
     if (errorsMessages.length > 0) {
         res.status(400).send({ errorsMessages });
         return;
@@ -112,7 +116,7 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
     video.canBeDownloaded = canBeDownloaded;
     video.minAgeRestriction = minAgeRestriction;
     video.availableResolutions = availableResolutions;
-    video.publicationDate = new Date().toISOString();
+    video.publicationDate = publicationDate;
 
     res.status(204).send(video);
 });
